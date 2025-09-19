@@ -13,7 +13,13 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Account join(AccountDto accountDto){
-        Account account = new Account(accountDto.getUserPassword(),accountDto.getName(), accountDto.getUserId(), accountDto.getUserNumber(), accountDto.getBirth(), accountDto.getSex());
+        Account account = new Account(
+                accountDto.getUserPassword(),
+                accountDto.getName(),
+                accountDto.getUserId(),
+                accountDto.getUserNumber(),
+                accountDto.getBirth(),
+                accountDto.getSex());
         return accountRepository.save(account);
     }
 }

@@ -16,8 +16,7 @@ public class AccountController {
 
     // 회원가입
     @PostMapping("/join")
-    public Account joinUser(@RequestBody AccountDto accountDto){
+    public Account joinUser(@RequestBody AccountDto accountDto) {
         return accountService.join(accountDto);
     }
-
 }
