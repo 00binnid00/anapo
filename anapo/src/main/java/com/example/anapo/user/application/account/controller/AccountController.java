@@ -19,6 +19,9 @@ public class AccountController {
     public Account joinUser(@RequestBody AccountDto accountDto) {
         Account account = accountService.join(accountDto);
         if (account == null) {
+            // account가 null이면
+            // throw -> 예의를 발생시키겠다
+            // new RuntimeException(...) -> 런타임 예외 객체 생성
             throw new RuntimeException("이미 존재하는 아이디입니다."); // 실패 메시지 처리
         }
         return account;
