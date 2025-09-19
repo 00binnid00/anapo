@@ -16,6 +16,6 @@ public class ReservationController {
 
     @PostMapping("/join")
     public Reservation joinUser(@RequestBody ReservationDto reservationDto){
-        return ReservationService.join(reservationDto);
+        return reservationService.join(reservationDto);
     }
 }

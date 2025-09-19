@@ -14,8 +14,10 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    // 회원가입
     @PostMapping("/join")
     public Account joinUser(@RequestBody AccountDto accountDto){
         return accountService.join(accountDto);
     }
+
 }
