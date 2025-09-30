@@ -12,8 +12,4 @@ public class ReservationService {
 
     private final  ReservationRepository reservationRepository;
 
-    public Reservation join(ReservationDto reservationDto){
-        Reservation reservation = new Reservation(reservationDto.getReserDate(), reservationDto.getReserYesNo(), reservationDto.getClinicYesNo(), reservationDto.getAcc(), reservationDto.getHos());
-        return reservationRepository.save(reservation);
-    }
 }
