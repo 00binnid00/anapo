@@ -16,16 +16,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final AccountRepository accountRepository;
+    private static final AccountRepository accountRepository = null;
 
+    // DB 저장 트랜잭션 적용
     @Transactional
-    public static Account create(UserCreateForm userCreateForm) {
-        if (AccountRepository.existsByUsername(userCreateForm.getName())) {
-            throw new DataIntegrityViolationException("이미 사용 중인 사용자명입니다.");
-        }
-    }
-
-    public static Account login(String name, String userPassword) {
+    public static Account create(AccountDto accountDto) {
+        // account 객체 생성
+        Account account = new Account(
+                accountDto.getUserPassword(),
+                accountDto.getName(),
+                accountDto.getUserId(),
+                accountDto.getUserNumber(),
+                accountDto.getBirth(),
+                accountDto.getSex());
+        // DB에 저장
+        return accountRepository.save(account);
     }
 
     public Account getUser(String username) {
@@ -35,6 +40,10 @@ public class AccountService {
         }
         return user.orElse(null);
     }
+
+    public Account login(String name, String userPassword) {
+    }
+
 //    // 회원가입
 //    public Account join(AccountDto accountDto){
 //
