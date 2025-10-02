@@ -20,9 +20,12 @@ public class AccountService {
 
     @Transactional
     public static Account create(UserCreateForm userCreateForm) {
-        if (AccountRepository.existsByUsername(userCreateForm.getname())) {
+        if (AccountRepository.existsByUsername(userCreateForm.getName())) {
             throw new DataIntegrityViolationException("이미 사용 중인 사용자명입니다.");
         }
+    }
+
+    public static Account login(String name, String userPassword) {
     }
 
     public Account getUser(String username) {

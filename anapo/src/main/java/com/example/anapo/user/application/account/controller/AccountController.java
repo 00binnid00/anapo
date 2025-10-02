@@ -8,11 +8,12 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class AccountController {
@@ -30,7 +31,7 @@ public class AccountController {
         if (bindingResult.hasErrors()) {
             return "join";
         }
-        if (!userCreateForm.getuserPassword().equals(userCreateForm.getuserPassword2())) {
+        if (!userCreateForm.getUserPassword().equals(userCreateForm.getUserPassword2())) {
             bindingResult.rejectValue("password2", "passwordMismatch", "비밀번호가 일치하지 않습니다.");
             return "join";
         }
@@ -54,7 +55,7 @@ public class AccountController {
 
     @PostMapping("/login")
     public String login(@RequestParam String name, @RequestParam String userPassword, HttpSession session, Model model) {
-        Account user = AccountService.create(name, userPassword);
+        Account user = AccountService.login(name, userPassword);
         if (user != null) {
             session.setAttribute("loggedInUser", user);
             return "redirect:/user/main";
