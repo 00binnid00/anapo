@@ -49,11 +49,11 @@ public class AccountController {
 
         try {
             // 3️. 계정 생성 시도
-            accountService.create(userCreateForm);
+            AccountService.create(userCreateForm);
 
             // 4️. 회원가입 성공 메시지 전달
             // redirectAttributes.addFlashAttribute를 사용하면 리다이렉트 후에도 메시지 유지
-            redirectAttributes.addFlashAttribute("message", "회원가입이 완료되었습니다. 로그인하세요.");
+            redirectAttributes.addFlashAttribute("message", "회원가입이 완료되었습니다.");
 
         } catch (DataIntegrityViolationException e) {
             // 5️. DB 유니크 제약 조건 위반 시 (예: 이미 존재하는 사용자명)
@@ -67,7 +67,7 @@ public class AccountController {
             return "join"; // 회원가입 화면으로 돌아감
         }
 
-        // 7️. 성공 시 로그인 페이지로 리다이렉트
+        // 7️. 성공 시 메인 페이지로 리다이렉트
         return "redirect:/user/main_form";
     }
 
