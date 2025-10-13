@@ -17,7 +17,7 @@ public class HospitalDto {
     private String hosName;
 
     @NotEmpty
-    private String hosAdress;
+    private String hosAddress;
 
     @NotEmpty
     private String hosNumber;

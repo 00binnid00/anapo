@@ -49,7 +49,7 @@ public class AccountController {
 
         try {
             // 3️. 계정 생성 시도
-            AccountService.create(userCreateForm);
+            accountService.create(userCreateForm);
 
             // 4️. 회원가입 성공 메시지 전달
             // redirectAttributes.addFlashAttribute를 사용하면 리다이렉트 후에도 메시지 유지

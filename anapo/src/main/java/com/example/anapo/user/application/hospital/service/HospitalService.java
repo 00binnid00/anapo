@@ -37,7 +37,7 @@ public class HospitalService {
         return HospitalDto.builder()
                 .id(hospital.getId())
                 .hosName(hospital.getHosName())
-                .hosAdress(hospital.getHosAddress())
+                .hosAddress(hospital.getHosAddress())
                 .hosNumber(hospital.getHosNumber())
                 .hosTime(hospital.getHosTime())
                 .build();

@@ -16,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private static final AccountRepository accountRepository = null;
+    private final AccountRepository accountRepository = null;
 
     // DB 저장 트랜잭션 적용
     @Transactional
-    public static Account create(AccountDto accountDto) {
+    public  Account create(AccountDto accountDto) {
         // account 객체 생성
         Account account = new Account(
                 accountDto.getUserPassword(),
@@ -34,7 +34,7 @@ public class AccountService {
     }
 
     public Account getUser(String username) {
-        Optional<Account> user = AccountRepository.findByUsername(username);
+        Optional<Account> user = accountRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new DataNotFoundException("사용자를 찾을 수 없습니다.");
         }
