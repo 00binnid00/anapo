@@ -6,13 +6,11 @@ import java.util.Date;
 
 @Getter
 public class ReservationDto {
-    private Date reserDate;
+    private Date reserDate;   // 예약 날짜 및 시간 (선택형)
 
-    private Boolean reserYesNo;
+    private String department; // 진료 과목 (선택형)
 
-    private Boolean clinicYesNo;
+    private Integer acc;       // 사용자 ID
 
-    private Integer acc;
-
-    private Integer hos;
+    private Integer hos;       // 병원 ID
 }
