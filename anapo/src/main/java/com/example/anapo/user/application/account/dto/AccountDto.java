@@ -11,7 +11,7 @@ import java.time.format.DateTimeParseException;
 @Getter
 
 public class AccountDto {
-    @NotEmpty(message = "이름은 필수항목입니다.")
+    @NotEmpty(message = "비밀번호은 필수항목입니다.")
     private String userPassword;
 
     @NotEmpty(message = "비밀번호 확인은 필수항목입니다.")

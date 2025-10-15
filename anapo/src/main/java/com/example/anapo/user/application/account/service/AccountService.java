@@ -1,18 +1,16 @@
 package com.example.anapo.user.application.account.service;
 
 import com.example.anapo.user.DataNotFoundException;
-import com.example.anapo.user.application.account.controller.UserCreateForm;
 import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.domain.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service("userReservationService")
 @RequiredArgsConstructor
 public class AccountService {
 
@@ -34,7 +32,7 @@ public class AccountService {
     }
 
     public Account getUser(String username) {
-        Optional<Account> user = accountRepository.findByUsername(username);
+        Optional<Account> user = accountRepository.findByUserName(username);
         if (user.isEmpty()) {
             throw new DataNotFoundException("사용자를 찾을 수 없습니다.");
         }

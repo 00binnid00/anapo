@@ -4,6 +4,7 @@ import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.application.account.service.AccountService;
 import com.example.anapo.user.domain.account.entity.Account;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -21,13 +22,13 @@ public class AccountController {
 
     @GetMapping("/join")
     public String join(Model model) {
-        model.addAttribute("userCreateForm", new UserCreateForm());
+        model.addAttribute("AccountDto", new AccountDto());
         return "join"; // 회원가입 화면
     }
 
     @PostMapping("/join") // POST 요청으로 /user/join에 들어오면 실행
-    public String join(
-            AccountDto userCreateForm, // 폼 데이터를 UserCreateForm 객체로 받아 유효성 검증
+    public String join( @Valid @ModelAttribute("AccountDto")
+            AccountDto accountDto, // 폼 데이터를 accountDto 객체로 받아 유효성 검증
             BindingResult bindingResult,          // 유효성 검증 결과를 담는 객체
             RedirectAttributes redirectAttributes // 리다이렉트 시 메시지 전달용 객체
     ) {
@@ -40,7 +41,7 @@ public class AccountController {
 
         // 2️. 비밀번호 확인 체크
         // userPassword와 userPassword2가 일치하지 않으면 오류
-        if (!userCreateForm.getUserPassword().equals(userCreateForm.getUserPassword2())) {
+        if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
             // rejectValue: 특정 필드에 대한 오류 등록
             // 첫 번째 인자는 필드 이름, 두 번째 인자는 오류 코드, 세 번째 인자는 사용자 메시지
             bindingResult.rejectValue("userPassword2", "passwordMismatch", "비밀번호가 일치하지 않습니다.");
@@ -49,7 +50,7 @@ public class AccountController {
 
         try {
             // 3️. 계정 생성 시도
-            accountService.create(userCreateForm);
+            accountService.create(accountDto);
 
             // 4️. 회원가입 성공 메시지 전달
             // redirectAttributes.addFlashAttribute를 사용하면 리다이렉트 후에도 메시지 유지
@@ -82,13 +83,13 @@ public class AccountController {
     // 2️. 로그인 처리
     @PostMapping("/login")
     public String login(
-            @RequestParam String name,          // 폼에서 전송된 'name' 파라미터 받음
+            @RequestParam String userId,          // 폼에서 전송된 'userId' 파라미터 받음
             @RequestParam String userPassword,  // 폼에서 전송된 'userPassword' 파라미터 받음
             HttpSession session,                // 로그인 성공 시 세션에 사용자 정보 저장
             Model model                         // 로그인 실패 시 에러 메시지 전달
     ) {
         // 2-1️ 서비스 계층 호출로 사용자 인증
-        Account user = accountService.login(name, userPassword);
+        Account user = accountService.login(userId, userPassword);
 
         if (user != null) {
             // 2-2️ 로그인 성공 시
@@ -102,6 +103,9 @@ public class AccountController {
             // 2-3️ 로그인 실패 시
             // 모델에 에러 메시지 담아서 다시 로그인 화면 렌더링
             model.addAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
+
+            // 입력한 아이디 유지
+            model.addAttribute("userId", userId);
 
             // 로그인 화면으로 이동
             return "login_form";

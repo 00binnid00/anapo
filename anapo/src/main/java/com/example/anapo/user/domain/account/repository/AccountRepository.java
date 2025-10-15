@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByUsername(String username);
-    boolean existsByUsername(String username);
-    void deleteByUsername(String username);
+    Optional<Account> findByUserName(String userName);
+    boolean existsByUserName(String userName);
+    void deleteByUserName(String userName);
 }
