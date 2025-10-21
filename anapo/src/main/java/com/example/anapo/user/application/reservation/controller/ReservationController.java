@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("userReservationController")
 @RequiredArgsConstructor
 public class ReservationController {
 
     private final ReservationService reservationService;
 
     // 예약 등록
-    @PostMapping
+    @PostMapping("/reservation")
     public ResponseEntity<?> createReservation(@RequestBody ReservationDto dto) {
         Reservation saved = reservationService.createReservation(dto);
         return ResponseEntity.ok("예약이 성공적으로 등록되었습니다. 예약번호: " + saved.getId());
