@@ -26,7 +26,7 @@ public class AccountDto {
     private String userNumber;
 
     @NotEmpty(message = "이름은 필수항목입니다.")
-    private String name;
+    private String userName;
 
     @NotEmpty(message = "성별은 필수항목입니다.")
     private String sex;
