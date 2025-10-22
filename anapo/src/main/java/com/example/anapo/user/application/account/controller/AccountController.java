@@ -7,13 +7,14 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class AccountController {
@@ -26,36 +27,30 @@ public class AccountController {
         return "join"; // 회원가입 화면
     }
 
-    @PostMapping("/join")
-        public String join(@ModelAttribute @Valid AccountDto accountDto,
-                           BindingResult bindingResult,
-                           Model model) {
+        @PostMapping("/join")
+        public ResponseEntity<?> join(@RequestBody @Valid AccountDto accountDto) {
 
-            // 1. 사용자명 중복 체크
+            // 1️⃣ 사용자명 중복 체크
             if (accountService.existsByUserName(accountDto.getUserName())) {
-                bindingResult.rejectValue("userName", "duplicate", "이미 사용 중인 사용자명입니다.");
-                return "join";
+                return ResponseEntity.badRequest().body("이미 사용 중인 사용자명입니다.");
             }
-            // 2. 비밀번호 확인 체크
+
+            // 2️⃣ 비밀번호 확인 체크
+            if (accountDto.getUserPassword() == null || accountDto.getUserPassword2() == null) {
+                return ResponseEntity.badRequest().body("비밀번호 입력은 필수입니다.");
+            }
+
             if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
-                bindingResult.rejectValue("userPassword2", "error", "비밀번호가 일치하지 않습니다.");
+                return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
             }
 
-            // 유효성 오류 있으면 다시 가입 화면
-            if (bindingResult.hasErrors()) {
-                return "join";
-            }
-
-            // 3. 계정 생성
+            // 3️⃣ 계정 생성
             try {
                 accountService.create(accountDto);
+                return ResponseEntity.ok("회원가입 성공!");
             } catch (Exception e) {
-                model.addAttribute("errorMessage", "회원가입 실패: " + e.getMessage());
-                return "join";
+                return ResponseEntity.internalServerError().body("회원가입 실패: " + e.getMessage());
             }
-
-            // 4. 성공 시 로그인 페이지 이동
-            return "redirect:/user/login";
         }
 
     // 1️. 로그인 화면 보여주기

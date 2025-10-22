@@ -19,15 +19,15 @@ public class AccountService {
     // DB 저장 트랜잭션 적용
     @Transactional
     public  Account create(AccountDto accountDto) {
-        // account 객체 생성
-        Account account = new Account(
-                accountDto.getUserPassword(),
-                accountDto.getUserName(),
-                accountDto.getUserId(),
-                accountDto.getUserNumber(),
-                accountDto.getBirth(),
-                accountDto.getSex());
-        // DB에 저장
+        Account account = Account.builder()
+                .userId(accountDto.getUserId())
+                .userPassword(accountDto.getUserPassword())
+                .userName(accountDto.getUserName())
+                .userNumber(accountDto.getUserNumber())
+                .birth(accountDto.getBirth())
+                .sex(accountDto.getSex())
+                .build();
+
         return accountRepository.save(account);
     }
 

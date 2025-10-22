@@ -3,12 +3,16 @@ package com.example.anapo.user.domain.account.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +37,6 @@ public class Account {
 
     @Column(nullable = false)
     private String sex;
-
 
     public Account(String userPassword, String userName, String userId, @NotEmpty(message = "전화번호는 필수항목입니다.") @Pattern(regexp = "\\d{10,11}", message = "전화번호 형식은 01012345678이어야 합니다.") String userNumber, String birth, String sex) {
         this.userPassword = userPassword;
