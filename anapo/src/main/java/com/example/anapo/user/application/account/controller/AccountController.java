@@ -30,12 +30,12 @@ public class AccountController {
         @PostMapping("/join")
         public ResponseEntity<?> join(@RequestBody @Valid AccountDto accountDto) {
 
-            // 1️⃣ 사용자명 중복 체크
+            // 1️. 사용자명 중복 체크
             if (accountService.existsByUserName(accountDto.getUserName())) {
                 return ResponseEntity.badRequest().body("이미 사용 중인 사용자명입니다.");
             }
 
-            // 2️⃣ 비밀번호 확인 체크
+            // 2️. 비밀번호 확인 체크
             if (accountDto.getUserPassword() == null || accountDto.getUserPassword2() == null) {
                 return ResponseEntity.badRequest().body("비밀번호 입력은 필수입니다.");
             }
@@ -44,7 +44,7 @@ public class AccountController {
                 return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
             }
 
-            // 3️⃣ 계정 생성
+            // 3️. 계정 생성
             try {
                 accountService.create(accountDto);
                 return ResponseEntity.ok("회원가입 성공!");
@@ -69,11 +69,11 @@ public class AccountController {
             HttpSession session,                // 로그인 성공 시 세션에 사용자 정보 저장
             Model model                         // 로그인 실패 시 에러 메시지 전달
     ) {
-        // 2-1️ 서비스 계층 호출로 사용자 인증
+        // 2-1️. 서비스 계층 호출로 사용자 인증
         Account user = accountService.login(userId, userPassword);
 
         if (user != null) {
-            // 2-2️ 로그인 성공 시
+            // 2-2️. 로그인 성공 시
             // 세션에 로그인 정보 저장 (key: "loggedInUser")
             session.setAttribute("loggedInUser", user);
 
@@ -81,7 +81,7 @@ public class AccountController {
             return "redirect:/user/main";
 
         } else {
-            // 2-3️ 로그인 실패 시
+            // 2-3️. 로그인 실패 시
             // 모델에 에러 메시지 담아서 다시 로그인 화면 렌더링
             model.addAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
 

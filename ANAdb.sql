@@ -23,21 +23,14 @@ DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `account` (
-  `birth` varchar(255) NOT NULL,
-  `userNumber` varchar(15) NOT NULL,
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `userName` varchar(255) NOT NULL,
-  `userPassword` varchar(255) NOT NULL,
-  `sex` varchar(255) NOT NULL,
-  `userId` varchar(255) NOT NULL,
-  `user_user_id` varchar(255) NOT NULL,
-  `user_id` varchar(255) NOT NULL,
-  `user_name` varchar(255) NOT NULL,
-  `user_number` varchar(255) NOT NULL,
-  `user_password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UKh6dr47em6vg85yuwt4e2roca4` (`userId`),
-  UNIQUE KEY `UKledt8behd3ub59c94y0a1qhlp` (`user_user_id`)
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,              -- PK
+
+      user_id VARCHAR(255) NOT NULL UNIQUE,              -- 아이디 (중복 불가)
+      user_name VARCHAR(255) NOT NULL,                   -- 이름
+      user_number VARCHAR(255) NOT NULL,                 -- 전화번호
+      user_password VARCHAR(255) NOT NULL,               -- 비밀번호
+      birth VARCHAR(255) NOT NULL,                       -- 생년월일
+      sex VARCHAR(255) NOT NULL                          -- 성별
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
