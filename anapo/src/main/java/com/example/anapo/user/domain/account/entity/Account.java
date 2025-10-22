@@ -3,29 +3,34 @@ package com.example.anapo.user.domain.account.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String userPassword;
-
-    @Column(nullable = false)
-    private String userName;
-
     @Column(unique = true, nullable = false)
     private String userId;
 
-    @Column(nullable = false)
-    private @NotEmpty(message = "전화번호는 필수항목입니다.")
-    @Pattern(regexp = "\\d{10,11}", message = "전화번호 형식은 01012345678이어야 합니다.") String userNumber;
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+
+    @Column(name = "user_number", nullable = false)
+    @NotEmpty(message = "전화번호는 필수항목입니다.")
+    @Pattern(regexp = "\\d{10,11}", message = "전화번호 형식은 01012345678이어야 합니다.")
+    private String userNumber;
+
+    @Column(name = "user_password", nullable = false)
+    private String userPassword;
 
     @Column(nullable = false)
     private String birth;

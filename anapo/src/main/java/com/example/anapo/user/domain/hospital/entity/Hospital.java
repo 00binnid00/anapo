@@ -18,16 +18,16 @@ public class Hospital {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "hos_name", nullable = false)
     private String hosName;
 
-    @Column(nullable = false)
+    @Column(name = "hos_address", nullable = false)
     private String hosAddress;
 
-    @Column(nullable = false)
+    @Column(name = "hos_number", nullable = false)
     private String hosNumber;
 
-    @Column(nullable = false)
+    @Column(name = "hos_time", nullable = false)
     private String hosTime;
 
     public Hospital(String hosName, String hosAddress, String hosNumber, String hosTime) {
