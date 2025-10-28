@@ -3,8 +3,10 @@ package com.example.anapo.user.application.hospital.service;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import com.example.anapo.user.domain.hospital.repository.HospitalRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,15 +27,14 @@ public class HospitalService {
 
     // 병원 이름으로 검색
     public List<HospitalDto> searchByName(String name) {
-        return hospitalRepository.findAll()
+        return hospitalRepository.findByHosNameContaining(name)
                 .stream()
-                .filter(h -> h.getHosName().contains(name))
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     // 엔티티 -> DTO 변환
-    private HospitalDto convertToDto(Hospital hospital) {
+    private HospitalDto convertToDto(@Valid @RequestBody Hospital hospital) {
         return HospitalDto.builder()
                 .id(hospital.getId())
                 .hosName(hospital.getHosName())

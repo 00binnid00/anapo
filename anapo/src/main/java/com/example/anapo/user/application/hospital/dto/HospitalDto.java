@@ -9,8 +9,6 @@ import lombok.Getter;
 @Builder
 public class HospitalDto {
 
-    @Id
-    @NotEmpty
     private Long id;
 
     @NotEmpty
