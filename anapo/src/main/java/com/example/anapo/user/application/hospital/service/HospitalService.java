@@ -34,7 +34,7 @@ public class HospitalService {
     }
 
     // 엔티티 -> DTO 변환
-    private HospitalDto convertToDto(@Valid @RequestBody Hospital hospital) {
+    private HospitalDto convertToDto(Hospital hospital) {
         return HospitalDto.builder()
                 .id(hospital.getId())
                 .hosName(hospital.getHosName())
