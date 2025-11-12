@@ -31,8 +31,8 @@ public class AccountController {
         public ResponseEntity<?> join(@RequestBody @Valid AccountDto accountDto) {
 
             // 1️. 사용자명 중복 체크
-            if (accountService.existsByUserName(accountDto.getUserName())) {
-                return ResponseEntity.badRequest().body("이미 사용 중인 사용자명입니다.");
+            if (accountService.existsByUserid(accountDto.getUserId())) {
+                return ResponseEntity.badRequest().body("이미 사용 중인 아이디입니다.");
             }
 
             // 2️. 비밀번호 확인 체크

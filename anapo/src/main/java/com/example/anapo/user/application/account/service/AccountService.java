@@ -50,7 +50,7 @@ public class AccountService {
     }
 
     // 중복 체크 메서드
-    public boolean existsByUserName(String userName) {
-        return accountRepository.existsByUserName(userName);
+    public boolean existsByUserid(String userId) {
+        return accountRepository.existsByUserName(userId);
     }
 }
