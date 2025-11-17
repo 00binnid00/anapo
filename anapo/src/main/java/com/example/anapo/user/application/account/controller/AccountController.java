@@ -14,46 +14,56 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class AccountController {
 
     private final AccountService accountService;
 
+    // 회원가입 화면 요청
     @GetMapping("/join")
     public String join(Model model) {
         model.addAttribute("accountDto", new AccountDto());
-        return "join"; // 회원가입 화면
+        return "join";
     }
 
-        @PostMapping("/join")
-        public ResponseEntity<?> join(@RequestBody @Valid AccountDto accountDto) {
+    // 회원가입 처리
+    @PostMapping("/join")
+    public String join(
+            @Valid @ModelAttribute AccountDto accountDto, // DTO 유효성 검증
+            BindingResult bindingResult,
+            Model model
+    ) {
 
-            // 1️. 사용자명 중복 체크
-            if (accountService.existsByUserid(accountDto.getUserId())) {
-                return ResponseEntity.badRequest().body("이미 사용 중인 아이디입니다.");
-            }
-
-            // 2️. 비밀번호 확인 체크
-            if (accountDto.getUserPassword() == null || accountDto.getUserPassword2() == null) {
-                return ResponseEntity.badRequest().body("비밀번호 입력은 필수입니다.");
-            }
-
-            if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
-                return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-            }
-
-            // 3️. 계정 생성
-            try {
-                accountService.create(accountDto);
-                return ResponseEntity.ok("회원가입 성공!");
-            } catch (Exception e) {
-                return ResponseEntity.internalServerError().body("회원가입 실패: " + e.getMessage());
-            }
+        if (bindingResult.hasErrors()) {
+            return "join";
         }
 
-    // 1️. 로그인 화면 보여주기
+        // 아이디 중복 검사
+        if (accountService.existsByUserId(accountDto.getUserId())) {
+            model.addAttribute("error", "이미 사용 중인 아이디입니다.");
+            return "join";
+        }
+
+        // 비밀번호 일치 검사
+        if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "join";
+        }
+
+        // 회원가입 처리
+        try {
+            accountService.create(accountDto);
+            return "redirect:/user/login";
+        } catch (Exception e) {
+            model.addAttribute("error", "회원가입 실패: " + e.getMessage());
+            return "join";
+        }
+    }
+
+
+    // 로그인 화면 요청
     @GetMapping("/login")
     public String login() {
         // 로그인 화면 뷰 이름 반환
@@ -61,7 +71,7 @@ public class AccountController {
         return "login_form";
     }
 
-    // 2️. 로그인 처리
+    // 로그인 처리
     @PostMapping("/login")
     public String login(
             @RequestParam String userId,          // 폼에서 전송된 'userId' 파라미터 받음
@@ -69,11 +79,11 @@ public class AccountController {
             HttpSession session,                // 로그인 성공 시 세션에 사용자 정보 저장
             Model model                         // 로그인 실패 시 에러 메시지 전달
     ) {
-        // 2-1️. 서비스 계층 호출로 사용자 인증
+        // 1. 서비스 계층 호출로 사용자 인증
         Account user = accountService.login(userId, userPassword);
 
         if (user != null) {
-            // 2-2️. 로그인 성공 시
+            // 2. 로그인 성공 시
             // 세션에 로그인 정보 저장 (key: "loggedInUser")
             session.setAttribute("loggedInUser", user);
 
@@ -81,7 +91,7 @@ public class AccountController {
             return "redirect:/user/main";
 
         } else {
-            // 2-3️. 로그인 실패 시
+            // 3. 로그인 실패 시
             // 모델에 에러 메시지 담아서 다시 로그인 화면 렌더링
             model.addAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
 
@@ -93,4 +103,28 @@ public class AccountController {
         }
     }
 
+    // 로그인 후 메인 화면
+    @GetMapping("/main")
+    public String main(HttpSession session, Model model) {
+        // 로그인한 사용자 정보 가져오기
+        Account logged = (Account) session.getAttribute("loggedInUser");
+
+        // 로그인 안되어 있을 때 처리
+        if (logged == null) {
+            return "redirect:/user/login";
+        }
+
+        // DB에서 최신 사용자 정보 다시 조회 (세션 데이터는 오래될 수 있음)
+        Account freshUser = accountService.getUser(logged.getUserName());
+
+        model.addAttribute("user", freshUser);
+        return "main_page";
+    }
+
+    // 로그아웃
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/user/login";
+    }
 }
