@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 @Getter
-
 public class AccountDto {
     @NotEmpty(message = "비밀번호은 필수항목입니다.")
     private String userPassword;
