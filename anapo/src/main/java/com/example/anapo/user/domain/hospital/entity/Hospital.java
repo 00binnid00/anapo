@@ -30,10 +30,19 @@ public class Hospital {
     @Column(name = "hos_time", nullable = false)
     private String hosTime;
 
-    public Hospital(String hosName, String hosAddress, String hosNumber, String hosTime) {
+    @Column(name = "hos_lat", nullable = false)
+    private double hosLat;      // 위도
+
+    @Column(name = "hos_lng", nullable = false)
+    private double hosLng;      // 경도
+
+    public Hospital(String hosName, String hosAddress, String hosNumber, String hosTime,
+                    double hosLat, double hosLng) {
         this.hosName = hosName;
         this.hosAddress = hosAddress;
         this.hosNumber = hosNumber;
         this.hosTime = hosTime;
+        this.hosLat = hosLat;
+        this.hosLng = hosLng;
     }
 }

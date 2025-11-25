@@ -1,5 +1,6 @@
 package com.example.anapo.user.application.hospital.service;
 
+import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import com.example.anapo.user.domain.hospital.repository.HospitalRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,42 @@ public class HospitalService {
                 .hosNumber(hospital.getHosNumber())
                 .hosTime(hospital.getHosTime())
                 .build();
+    }
+
+/*------------------------------------------------------------------------------------------*/
+
+    // 사용자 위치 기준 반경 1km 병원 찾기
+    public List<HospitalDisDto> getNearbyHospitals(double userLat, double userLng) {
+
+        List<Hospital> hospitals = hospitalRepository.findAll();
+
+        return hospitals.stream()
+                .map(h -> {
+                    double distance = calculateDistance(
+                            userLat, userLng,
+                            h.getHosLat(), h.getHosLng()
+                    );
+                    return new HospitalDisDto(h, distance);
+                })
+                .filter(h -> h.getDistance() <= 1.0) // 반경 1km 이하만 필터링
+                .sorted(Comparator.comparingDouble(HospitalDisDto::getDistance)) // 가까운 순 정렬
+                .collect(Collectors.toList());
+    }
+
+    // 거리 계산
+    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+        final int R = 6371; // 지구 반지름(km)
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // 거리(km)
     }
 }
 

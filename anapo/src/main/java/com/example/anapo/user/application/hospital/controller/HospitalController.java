@@ -1,9 +1,11 @@
 package com.example.anapo.user.application.hospital.controller;
 
+import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.application.hospital.service.HospitalService;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,5 +27,17 @@ public class HospitalController {
     @GetMapping("/search")
     public List<HospitalDto> searchHospitals(@RequestParam String name) {
         return hospitalService.searchByName(name);
+    }
+
+    /*------------------------------------------------------------------------------------------*/
+
+    // 병원 위도, 경도 구하기
+    @GetMapping("/near")
+    public ResponseEntity<List<HospitalDisDto>> getNearby(
+            @RequestParam double lat,
+            @RequestParam double lng
+    ) {
+        List<HospitalDisDto> result = hospitalService.getNearbyHospitals(lat, lng);
+        return ResponseEntity.ok(result);
     }
 }
