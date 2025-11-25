@@ -20,6 +20,9 @@ CREATE TABLE hospital (
     hos_address VARCHAR(255) NOT NULL,                -- 병원 주소
     hos_number VARCHAR(255) NOT NULL,                 -- 병원 전화번호
     hos_time VARCHAR(255) NOT NULL                    -- 병원 운영시간
+
+    hos_lat DOUBLE NOT NULL,                         -- 병원 위도
+    hos_lng DOUBLE NOT NULL                          -- 병원 경도
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE reservation (
