@@ -33,4 +33,14 @@ public class ChatMessage {
 
     @NotEmpty
     private LocalDateTime sentAt;
+
+    public static ChatMessage create(Long roomId, Long senderId, String senderType, String message) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setRoomId(roomId);
+        chatMessage.setSenderId(senderId);
+        chatMessage.setSenderType(senderType);
+        chatMessage.setMessage(message);
+        chatMessage.setSentAt(LocalDateTime.now());
+        return chatMessage;
+    }
 }
