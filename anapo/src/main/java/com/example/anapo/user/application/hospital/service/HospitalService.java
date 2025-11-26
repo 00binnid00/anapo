@@ -1,5 +1,6 @@
 package com.example.anapo.user.application.hospital.service;
 
+import com.example.anapo.user.application.hospital.dto.HospitalCreateDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
@@ -45,6 +46,21 @@ public class HospitalService {
                 .hosTime(hospital.getHosTime())
                 .build();
     }
+
+/*------------------------------------------------------------------------------------------*/
+
+public Hospital createHospital(HospitalCreateDto dto) {
+    Hospital hospital = Hospital.builder()
+            .hosName(dto.getHosName())
+            .hosAddress(dto.getHosAddress())
+            .hosNumber(dto.getHosNumber())
+            .hosTime(dto.getHosTime())
+            .hosLat(dto.getHosLat())
+            .hosLng(dto.getHosLng())
+            .build();
+
+    return hospitalRepository.save(hospital);
+}
 
 /*------------------------------------------------------------------------------------------*/
 

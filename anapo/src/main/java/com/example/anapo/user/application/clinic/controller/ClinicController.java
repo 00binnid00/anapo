@@ -1,6 +1,7 @@
 package com.example.anapo.user.application.clinic.controller;
 
 import com.example.anapo.user.application.clinic.dto.ClinicDto;
+import com.example.anapo.user.application.clinic.dto.ClinicResponseDto;
 import com.example.anapo.user.application.clinic.service.ClinicService;
 import com.example.anapo.user.domain.clinic.entity.Clinic;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,24 @@ public class ClinicController {
 
     // 회원별 진료 내역 조회
     @GetMapping("/user/{acc}")
-    public ResponseEntity<List<Clinic>> getClinicsByUser(@PathVariable Long acc) {
-        return ResponseEntity.ok(clinicService.getClinicsByUser(acc));
+    public ResponseEntity<List<ClinicResponseDto>> getClinicsByUser(@PathVariable Long acc) {
+        List<ClinicResponseDto> result = clinicService.getClinicsByUser(acc)
+                .stream()
+                .map(ClinicResponseDto::new)
+                .toList();
+
+        return ResponseEntity.ok(result);
     }
 
     // 병원별 진료 내역 조회
     @GetMapping("/hospital/{hos}")
-    public ResponseEntity<List<Clinic>> getClinicsByHospital(@PathVariable Long hos) {
-        return ResponseEntity.ok(clinicService.getClinicsByHospital(hos));
+    public ResponseEntity<List<ClinicResponseDto>> getClinicsByHospital(@PathVariable Long hos) {
+
+        List<ClinicResponseDto> result = clinicService.getClinicsByHospital(hos)
+                .stream()
+                .map(ClinicResponseDto::new)
+                .toList();
+
+        return ResponseEntity.ok(result);
     }
 }

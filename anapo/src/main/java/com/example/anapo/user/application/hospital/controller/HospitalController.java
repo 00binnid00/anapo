@@ -1,5 +1,6 @@
 package com.example.anapo.user.application.hospital.controller;
 
+import com.example.anapo.user.application.hospital.dto.HospitalCreateDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.application.hospital.service.HospitalService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/hospitals")
@@ -16,6 +18,19 @@ import java.util.List;
 public class HospitalController {
 
     private final HospitalService hospitalService;
+
+
+    @PostMapping
+    public ResponseEntity<?> createHospital(@RequestBody HospitalCreateDto dto) {
+        Hospital saved = hospitalService.createHospital(dto);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "병원 등록 완료",
+                "id", saved.getId()
+        ));
+    }
+
+/*------------------------------------------------------------------------------------------*/
 
     // 전체 병원 목록 조회
     @GetMapping
@@ -29,7 +44,7 @@ public class HospitalController {
         return hospitalService.searchByName(name);
     }
 
-    /*------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------*/
 
     // 병원 위도, 경도 구하기
     @GetMapping("/near")

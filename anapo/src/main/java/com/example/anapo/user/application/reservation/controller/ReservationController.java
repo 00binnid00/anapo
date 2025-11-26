@@ -5,13 +5,11 @@ import com.example.anapo.user.application.reservation.service.ReservationService
 import com.example.anapo.user.domain.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RestController("userReservationController")
+@RestController
 @RequiredArgsConstructor
 public class ReservationController {
 
@@ -51,6 +49,21 @@ public class ReservationController {
                     "error", "서버 오류가 발생했습니다.",
                     "details", e.getMessage()
             ));
+        }
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
+        try {
+            reservationService.deleteReservation(id);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "예약이 정상적으로 삭제되었습니다.",
+                    "reservationId", id
+            ));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }

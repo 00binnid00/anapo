@@ -18,6 +18,7 @@ public class ReservationService {
     private final AccountRepository accountRepository;
     private final HospitalRepository hospitalRepository;
 
+    // 예약 등록
     public Reservation createReservation(ReservationDto dto) {
         // 1. 필수 입력값 검증
         if (dto.getReserDate() == null || dto.getDepartment() == null || dto.getAcc() == null || dto.getHos() == null) {
@@ -51,5 +52,17 @@ public class ReservationService {
         );
 
         return reservationRepository.save(reservation);
+    }
+
+    public void deleteReservation(Long reservationId) {
+
+        // 존재 여부 확인
+        boolean exists = reservationRepository.existsById(reservationId);
+        if (!exists) {
+            throw new IllegalArgumentException("해당 예약이 존재하지 않습니다.");
+        }
+
+        // DB에서 완전 삭제
+        reservationRepository.deleteById(reservationId);
     }
 }
