@@ -3,6 +3,8 @@ package com.example.anapo.user.application.account.controller;
 import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.application.account.service.AccountService;
 import com.example.anapo.user.domain.account.entity.Account;
+import com.example.anapo.user.exception.DuplicateUserIdException;
+import com.example.anapo.user.exception.PasswordMismatchException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,44 +23,15 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    // 회원가입 화면 요청
-    @GetMapping("/join")
-    public String join(Model model) {
-        model.addAttribute("accountDto", new AccountDto());
-        return "join";
-    }
-
-    // 회원가입 처리
     @PostMapping("/join")
-    public String join(
-            @Valid @ModelAttribute AccountDto accountDto, // DTO 유효성 검증
-            BindingResult bindingResult,
-            Model model
-    ) {
+    public ResponseEntity<?> joinUser(@RequestBody AccountDto accountDto) {
 
-        if (bindingResult.hasErrors()) {
-            return "join";
-        }
-
-        // 아이디 중복 검사
-        if (accountService.existsByUserId(accountDto.getUserId())) {
-            model.addAttribute("error", "이미 사용 중인 아이디입니다.");
-            return "join";
-        }
-
-        // 비밀번호 일치 검사
-        if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "join";
-        }
-
-        // 회원가입 처리
         try {
-            accountService.create(accountDto);
-            return "redirect:/user/login";
-        } catch (Exception e) {
-            model.addAttribute("error", "회원가입 실패: " + e.getMessage());
-            return "join";
+            return ResponseEntity.ok(accountService.join(accountDto));
+        } catch (DuplicateUserIdException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (PasswordMismatchException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

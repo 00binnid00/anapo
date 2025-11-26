@@ -4,6 +4,8 @@ import com.example.anapo.user.DataNotFoundException;
 import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.domain.account.repository.AccountRepository;
+import com.example.anapo.user.exception.DuplicateUserIdException;
+import com.example.anapo.user.exception.PasswordMismatchException;
 import lombok.RequiredArgsConstructor;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -15,21 +17,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final AccountRepository accountRepository;
-
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    // DB 저장 트랜잭션 적용
-    @Transactional
-    public  Account create(AccountDto accountDto) {
-        Account account = Account.builder()
-                .userId(accountDto.getUserId())
-                .userPassword(encoder.encode(accountDto.getUserPassword())) // 비밀번호 암호화
-                .userName(accountDto.getUserName())
-                .userNumber(accountDto.getUserNumber())
-                .birth(accountDto.getBirth())
-                .sex(accountDto.getSex())
-                .build();
+    private final AccountRepository accountRepository;
+
+    public Account join(AccountDto accountDto){
+
+        // 아이디 중복 검사
+        if (accountRepository.findByUserId(accountDto.getUserId()).isPresent()) {
+            throw new DuplicateUserIdException("이미 존재하는 아이디입니다.");
+        }
+
+        // 비밀번호 & 비번확인 검사
+        if (!accountDto.getUserPassword().equals(accountDto.getUserPassword2())) {
+            throw new PasswordMismatchException("비밀번호가 서로 일치하지 않습니다.");
+        }
+
+        // 회원 생성 및 저장
+        Account account = new Account(
+                accountDto.getUserPassword(),
+                accountDto.getUserName(),
+                accountDto.getUserId(),
+                accountDto.getUserNumber(),
+                accountDto.getBirth(),
+                accountDto.getSex()
+        );
 
         return accountRepository.save(account);
     }

@@ -45,5 +45,4 @@ public class AccountDto {
         }
         return null;  // 생년월일이 비어있으면 null 반환
     }
-
 }
