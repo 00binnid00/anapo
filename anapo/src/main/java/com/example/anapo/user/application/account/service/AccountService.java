@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service("userReservationService")
@@ -56,15 +57,15 @@ public class AccountService {
     }
 
     // 로그인
-    public Account login(String userId, String userPassword) {
+    public Account login(AccountDto accountDto) {
 
-        Optional<Account> user = accountRepository.findByUserId(userId);
+        Optional<Account> user = accountRepository.findByUserId(accountDto.getUserId());
 
         if (user.isPresent()) {
             Account found = user.get();
 
-            // 암호화 비밀번호 비교
-            if (encoder.matches(userPassword, found.getUserPassword())) {
+            // 비밀번호 비교
+            if(Objects.equals(accountDto.getUserPassword(), found.getUserPassword())) {
                 return found;
             }
         }

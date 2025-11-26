@@ -47,13 +47,12 @@ public class AccountController {
     // 로그인 처리
     @PostMapping("/login")
     public String login(
-            @RequestParam String userId,          // 폼에서 전송된 'userId' 파라미터 받음
-            @RequestParam String userPassword,  // 폼에서 전송된 'userPassword' 파라미터 받음
+            @RequestBody AccountDto accountDto,  // 폼에서 전송된 'userPassword' 파라미터 받음
             HttpSession session,                // 로그인 성공 시 세션에 사용자 정보 저장
             Model model                         // 로그인 실패 시 에러 메시지 전달
     ) {
         // 1. 서비스 계층 호출로 사용자 인증
-        Account user = accountService.login(userId, userPassword);
+        Account user = accountService.login(accountDto);
 
         if (user != null) {
             // 2. 로그인 성공 시
@@ -69,7 +68,7 @@ public class AccountController {
             model.addAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
 
             // 입력한 아이디 유지
-            model.addAttribute("userId", userId);
+            model.addAttribute("userId", accountDto.getUserId());
 
             // 로그인 화면으로 이동
             return "login_form";
