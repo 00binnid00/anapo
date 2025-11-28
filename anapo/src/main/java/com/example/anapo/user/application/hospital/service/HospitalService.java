@@ -53,7 +53,7 @@ public class HospitalService {
                 .build();
     }
 
-/*------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------*/
 
     // 병원 정보 등록
     @Transactional
@@ -123,59 +123,5 @@ public class HospitalService {
         );
 
         return hospital;
-    }
-
-    // 해당 병원의 진료과목 검색
-    public List<String> getDepartmentsByHospital(Long hospitalId) {
-
-        List<HospitalDepartment> list =
-                hospitalDepartmentRepository.findByHospitalId(hospitalId);
-
-        return list.stream()
-                .map(hd -> hd.getDepartment().getDeptName())  // 진료과 이름만 추출
-                .collect(Collectors.toList());
-    }
-
-    // 진료과 기반 병원 검색
-    public List<HospitalDto> searchByDepartment(Long departmentId) {
-        return hospitalRepository.findByDepartment(departmentId)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    /*------------------------------------------------------------------------------------------*/
-// 사용자 위치 기반 반경 병원 검색
-public List<HospitalDisDto> getNearbyHospitals(double userLat, double userLng) {
-
-    List<Hospital> hospitals = hospitalRepository.findAll();
-
-    return hospitals.stream()
-            .map(h -> {
-                double distance = calculateDistance(
-                        userLat, userLng,
-                        h.getHosLat(), h.getHosLng()
-                );
-                return new HospitalDisDto(h, distance);
-            })
-            .filter(h -> h.getDistance() <= 1.0)
-            .sorted(Comparator.comparingDouble(HospitalDisDto::getDistance))
-            .collect(Collectors.toList());
-}
-
-    // 거리 계산
-    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        final int R = 6371;
-
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
-
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
     }
 }

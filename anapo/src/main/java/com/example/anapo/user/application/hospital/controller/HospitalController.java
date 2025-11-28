@@ -4,6 +4,7 @@ import com.example.anapo.user.application.hospital.dto.HosCreateDto;
 import com.example.anapo.user.application.hospital.dto.HosUpdateDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
+import com.example.anapo.user.application.hospital.service.HospitalSearchService;
 import com.example.anapo.user.application.hospital.service.HospitalService;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class HospitalController {
 
     private final HospitalService hospitalService;
+    private final HospitalSearchService hospitalSearchService;
 
 
     // 병원 정보 등록
@@ -56,6 +58,7 @@ public class HospitalController {
 
 /*------------------------------------------------------------------------------------------*/
 
+    // 병원 진료과목 추가
     @PostMapping("/{hosId}/departments")
     public ResponseEntity<?> addDepartmentsToHospital(
             @PathVariable Long hosId,
@@ -71,18 +74,6 @@ public class HospitalController {
         ));
     }
 
-    // 해당 병원의 진료과목 검색
-    @GetMapping("/{hosId}/departments")
-    public ResponseEntity<?> getHospitalDepartments(@PathVariable Long hosId) {
-
-        List<String> departments = hospitalService.getDepartmentsByHospital(hosId);
-
-        return ResponseEntity.ok(Map.of(
-                "hospitalId", hosId,
-                "departments", departments
-        ));
-    }
-
 /*------------------------------------------------------------------------------------------*/
 
     // 전체 병원 목록 조회
@@ -91,20 +82,7 @@ public class HospitalController {
         return hospitalService.getAllHospitals();
     }
 
-    // 이름으로 병원 검색
-    @GetMapping("/searchByhosName")
-    public List<HospitalDto> searchHospitals(@RequestParam String name) {
-        return hospitalService.searchByName(name);
-    }
-
-    // 진료과로 병원 검색
-    @GetMapping("/searchByDepartment")
-    public List<HospitalDto> searchByDepartment(@RequestParam Long departmentId) {
-        return hospitalService.searchByDepartment(departmentId);
-    }
-
-
-    /*------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------*/
 
     // 병원 위도, 경도 구하기
     @GetMapping("/near")
@@ -112,7 +90,7 @@ public class HospitalController {
             @RequestParam double lat,
             @RequestParam double lng
     ) {
-        List<HospitalDisDto> result = hospitalService.getNearbyHospitals(lat, lng);
+        List<HospitalDisDto> result = hospitalSearchService.getNearbyHospitals(lat, lng);
         return ResponseEntity.ok(result);
     }
 }
