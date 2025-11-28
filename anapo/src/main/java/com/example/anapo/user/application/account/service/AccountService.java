@@ -1,13 +1,12 @@
 package com.example.anapo.user.application.account.service;
 
-import com.example.anapo.user.DataNotFoundException;
+import com.example.anapo.user.exception.DataNotFoundException;
 import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.domain.account.repository.AccountRepository;
 import com.example.anapo.user.exception.DuplicateUserIdException;
 import com.example.anapo.user.exception.PasswordMismatchException;
 import lombok.RequiredArgsConstructor;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
