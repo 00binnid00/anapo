@@ -52,6 +52,34 @@ public class ReservationController {
         }
     }
 
+    // 예약 수정
+    @PatchMapping("/reservations/{id}")
+    public ResponseEntity<?> updateReservation(
+            @PathVariable Long id,
+            @RequestBody ReservationDto dto
+    ) {
+        try {
+            Reservation updated = reservationService.updateReservation(id, dto);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "예약이 성공적으로 변경되었습니다.",
+                    "reservationId", updated.getId(),
+                    "newReserDate", updated.getReserDate(),
+                    "newDepartment", updated.getDepartment()
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "error", "서버 오류가 발생했습니다.",
+                    "details", e.getMessage()
+            ));
+        }
+    }
+
+    // 예약 삭제
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         try {

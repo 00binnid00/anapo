@@ -45,5 +45,10 @@ public class Reservation {
         this.user = user;
         this.hospital = hospital;
     }
+
+    public void changeReservation(LocalDateTime newDate, String newDepartment) {
+        this.reserDate = newDate;
+        this.department = newDepartment;
+    }
 }
 

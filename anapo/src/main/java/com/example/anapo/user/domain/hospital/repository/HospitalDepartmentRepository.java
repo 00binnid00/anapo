@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface HospitalDepartmentRepository extends JpaRepository<HospitalDepartment, Long> {
     List<HospitalDepartment> findByHospitalId(Long hospitalId);
+    boolean existsByHospital_IdAndDepartment_DeptName(Long hospitalId, String deptName);
 }
