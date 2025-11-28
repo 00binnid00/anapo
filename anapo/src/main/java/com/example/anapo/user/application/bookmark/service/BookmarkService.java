@@ -6,6 +6,7 @@ import com.example.anapo.user.domain.bookmark.entity.Bookmark;
 import com.example.anapo.user.domain.bookmark.repository.BookmarkRepository;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import com.example.anapo.user.domain.hospital.repository.HospitalRepository;
+import com.example.anapo.user.exception.DuplicateBookmarkException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class BookmarkService {
         // 이미 즐겨찾기 되어있는지 확인
         bookmarkRepository.findByUserIdAndHospitalId(dto.getUserId(), dto.getHospitalId())
                 .ifPresent(b -> {
-                    throw new IllegalStateException("이미 즐겨찾기에 등록된 병원입니다.");
+                    throw new DuplicateBookmarkException("이미 즐겨찾기에 등록된 병원입니다.");
                 });
 
         // 병원 존재 여부 확인
@@ -36,6 +37,7 @@ public class BookmarkService {
         Bookmark bookmark = Bookmark.builder()
                 .userId(dto.getUserId())
                 .hospitalId(dto.getHospitalId())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         Bookmark saved = bookmarkRepository.save(bookmark);
@@ -52,7 +54,10 @@ public class BookmarkService {
 
     // 즐겨찾기 삭제
     public void removeBookmark(Long userId, Long hospitalId) {
-        bookmarkRepository.deleteByUserIdAndHospitalId(userId, hospitalId);
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndHospitalId(userId, hospitalId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기에 존재하지 않는 병원입니다."));
+
+        bookmarkRepository.delete(bookmark);
     }
 
     // 특정 사용자의 즐겨찾기 리스트 조회
@@ -70,7 +75,9 @@ public class BookmarkService {
                     .hospitalId(b.getHospitalId())
                     .hosName(hos.getHosName())
                     .hosAddress(hos.getHosAddress())
+                    .createdAt(b.getCreatedAt())
                     .build();
         }).collect(Collectors.toList());
     }
+
 }

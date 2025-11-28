@@ -2,6 +2,7 @@ package com.example.anapo.user.domain.bookmark.repository;
 
 import com.example.anapo.user.domain.bookmark.entity.Bookmark;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,4 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     // 중복 저장 방지 (이미 즐겨찾기한 병원인지 체크)
     Optional<Bookmark> findByUserIdAndHospitalId(Long userId, Long hospitalId);
-
-    // 즐겨찾기 삭제용
-    void deleteByUserIdAndHospitalId(Long userId, Long hospitalId);
 }

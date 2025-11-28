@@ -1,10 +1,9 @@
 package com.example.anapo.user.domain.bookmark.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,7 +17,15 @@ public class Bookmark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 사용자 FK
+    @Column(nullable = false)
     private Long userId;
 
+    // 병원 FK
+    @Column(nullable = false)
     private Long hospitalId;
+
+    // 즐겨찾기 등록 시간
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 }
