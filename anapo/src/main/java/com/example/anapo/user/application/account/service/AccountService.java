@@ -1,11 +1,13 @@
 package com.example.anapo.user.application.account.service;
 
+import com.example.anapo.user.application.account.dto.AccountUpdateDto;
 import com.example.anapo.user.exception.DataNotFoundException;
 import com.example.anapo.user.application.account.dto.AccountDto;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.domain.account.repository.AccountRepository;
 import com.example.anapo.user.exception.DuplicateUserIdException;
 import com.example.anapo.user.exception.PasswordMismatchException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Objects;
 import java.util.Optional;
 
-@Service("userReservationService")
+@Service()
 @RequiredArgsConstructor
 public class AccountService {
 
@@ -76,4 +78,22 @@ public class AccountService {
     public boolean existsByUserId(String userId) {
         return accountRepository.existsByUserId(userId);
     }
+
+/*--------------------------------------------------------------------------------------------------*/
+
+    @Transactional
+    public Account updateAccount(Long accId, AccountUpdateDto dto) {
+        Account account = accountRepository.findById(accId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        // 변경값 적용
+        if (dto.getUserName() != null) account.setUserName(dto.getUserName());
+        if (dto.getUserNumber() != null) account.setUserNumber(dto.getUserNumber());
+        if (dto.getBirth() != null) account.setBirth(dto.getBirth());
+        if (dto.getSex() != null) account.setSex(dto.getSex());
+
+        return account;
+    }
 }
+
+

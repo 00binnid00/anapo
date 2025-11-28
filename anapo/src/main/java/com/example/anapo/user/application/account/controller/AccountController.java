@@ -1,6 +1,7 @@
 package com.example.anapo.user.application.account.controller;
 
 import com.example.anapo.user.application.account.dto.AccountDto;
+import com.example.anapo.user.application.account.dto.AccountUpdateDto;
 import com.example.anapo.user.application.account.service.AccountService;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.exception.DuplicateUserIdException;
@@ -15,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -99,4 +102,26 @@ public class AccountController {
         session.invalidate();
         return "redirect:/user/login";
     }
+
+/*----------------------------------------------------------------------------------------------------*/
+
+    // 회원정보 수정
+    @PatchMapping("/accUpdate/{accid}")
+    public ResponseEntity<?> updateAccount(
+            @PathVariable Long accId,
+            @RequestBody AccountUpdateDto dto
+    ) {
+        Account updated = accountService.updateAccount(accId, dto);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "회원 정보가 수정되었습니다.",
+                "userName", updated.getUserName(),
+                "userNumber", updated.getUserNumber(),
+                "birth", updated.getBirth(),
+                "sex", updated.getSex()
+        ));
+    }
 }
+
+
+

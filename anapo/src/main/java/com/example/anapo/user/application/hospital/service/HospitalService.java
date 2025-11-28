@@ -1,14 +1,14 @@
 package com.example.anapo.user.application.hospital.service;
 
-import com.example.anapo.user.application.hospital.dto.HospitalCreateDto;
+import com.example.anapo.user.application.hospital.dto.HosCreateDto;
+import com.example.anapo.user.application.hospital.dto.HosUpdateDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import com.example.anapo.user.domain.hospital.repository.HospitalRepository;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Comparator;
 import java.util.List;
@@ -49,18 +49,38 @@ public class HospitalService {
 
 /*------------------------------------------------------------------------------------------*/
 
-public Hospital createHospital(HospitalCreateDto dto) {
-    Hospital hospital = Hospital.builder()
-            .hosName(dto.getHosName())
-            .hosAddress(dto.getHosAddress())
-            .hosNumber(dto.getHosNumber())
-            .hosTime(dto.getHosTime())
-            .hosLat(dto.getHosLat())
-            .hosLng(dto.getHosLng())
-            .build();
+    // 병원 정보 등록 (새로 생성)
+    public Hospital createHospital(HosCreateDto dto) {
+        Hospital hospital = Hospital.builder()
+                .hosName(dto.getHosName())
+                .hosAddress(dto.getHosAddress())
+                .hosNumber(dto.getHosNumber())
+                .hosEmail(dto.getHosEmail())
+                .hosTime(dto.getHosTime())
+                .hosLat(dto.getHosLat())
+                .hosLng(dto.getHosLng())
+                .build();
 
-    return hospitalRepository.save(hospital);
-}
+        return hospitalRepository.save(hospital);
+    }
+
+    // 병원 정보 수정
+    @Transactional
+    public Hospital updateHospital(Long hosId, HosUpdateDto dto) {
+        Hospital hospital = hospitalRepository.findById(hosId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 병원입니다."));
+
+        hospital.updateInfo(
+                dto.getHosName(),
+                dto.getHosAddress(),
+                dto.getHosEmail(),
+                dto.getHosNumber(),
+                dto.getHosLat(),
+                dto.getHosLng()
+        );
+
+        return hospital;
+    }
 
 /*------------------------------------------------------------------------------------------*/
 

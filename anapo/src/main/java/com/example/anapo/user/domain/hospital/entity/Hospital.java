@@ -31,6 +31,9 @@ public final class Hospital {
     @Column(name = "hos_number", nullable = false)
     private String hosNumber;
 
+    @Column(name = "hos_email")
+    private String hosEmail;
+
     @Column(name = "hos_time", nullable = false)
     private String hosTime;
 
@@ -40,13 +43,26 @@ public final class Hospital {
     @Column(name = "hos_lng", nullable = false)
     private double hosLng;      // 경도
 
-    public Hospital(String hosName, String hosAddress, String hosNumber, String hosTime,
-                    double hosLat, double hosLng) {
+    public Hospital(String hosName, String hosAddress, String hosNumber, String hosEmail,
+                    String hosTime, double hosLat, double hosLng) {
         this.hosName = hosName;
         this.hosAddress = hosAddress;
         this.hosNumber = hosNumber;
+        this.hosEmail = hosEmail;
         this.hosTime = hosTime;
         this.hosLat = hosLat;
         this.hosLng = hosLng;
+    }
+
+
+    public void updateInfo(String hosName, String hosAddress,String hosNumber,
+                           String hosEmail, Double hosLat, Double hosLng) {
+
+        if (hosName != null) this.hosName = hosName;
+        if (hosAddress != null) this.hosAddress = hosAddress;
+        if (hosEmail != null) this.hosEmail = hosEmail;
+        if (hosNumber != null) this.hosNumber = hosNumber;
+        if (hosLat != null) this.hosLat = hosLat;
+        if (hosLng != null) this.hosLng = hosLng;
     }
 }

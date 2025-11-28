@@ -1,6 +1,7 @@
 package com.example.anapo.user.application.hospital.controller;
 
-import com.example.anapo.user.application.hospital.dto.HospitalCreateDto;
+import com.example.anapo.user.application.hospital.dto.HosCreateDto;
+import com.example.anapo.user.application.hospital.dto.HosUpdateDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDisDto;
 import com.example.anapo.user.application.hospital.dto.HospitalDto;
 import com.example.anapo.user.application.hospital.service.HospitalService;
@@ -21,13 +22,34 @@ public class HospitalController {
 
 
     @PostMapping
-    public ResponseEntity<?> createHospital(@RequestBody HospitalCreateDto dto) {
+    public ResponseEntity<?> createHospital(@RequestBody HosCreateDto dto) {
         Hospital saved = hospitalService.createHospital(dto);
 
         return ResponseEntity.ok(Map.of(
                 "message", "병원 등록 완료",
                 "id", saved.getId()
         ));
+    }
+
+    @PatchMapping("/HosUpdate/{hosId}")
+    public ResponseEntity<?> updateHospital(
+            @PathVariable Long hosId,
+            @RequestBody HosUpdateDto dto
+    ) {
+        Hospital updated = hospitalService.updateHospital(hosId, dto);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "병원 정보가 수정되었습니다.",
+                        "id", updated.getId(),
+                        "hosName", updated.getHosName(),
+                        "hosAddress", updated.getHosAddress(),
+                        "hosEmail", updated.getHosEmail(),
+                        "hosNumber", updated.getHosNumber(),
+                        "hosLat", updated.getHosLat(),
+                        "hosLng", updated.getHosLng()
+                )
+        );
     }
 
 /*------------------------------------------------------------------------------------------*/

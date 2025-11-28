@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 @Getter
+@Setter
 public class AccountDto {
     @NotEmpty(message = "비밀번호은 필수항목입니다.")
     private String userPassword;
