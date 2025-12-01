@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.example.anapo.user.domain.reservation.entity.Reservation;
+import com.example.anapo.user.domain.clinic.entity.Clinic;
 
 import java.util.List;
 
@@ -31,18 +32,18 @@ public interface HospitalStatsRepository extends JpaRepository<Reservation, Long
     List<Object[]> getReservationByHour(Long hospitalId);
 
     // 신규 환자 수
-    @Query("SELECT COUNT(DISTINCT r.user.id) FROM Reservation r " +
-            "WHERE r.hospital.id = :hospitalId " +
-            "AND r.user.id NOT IN (" +
-            "SELECT r2.user.id FROM Reservation r2 " +
-            "WHERE r2.hospital.id = :hospitalId " +
-            "GROUP BY r2.user.id HAVING COUNT(r2) > 1)")
+    @Query("SELECT COUNT(DISTINCT c.user.id) FROM Clinic c " +
+            "WHERE c.hospital.id = :hospitalId " +
+            "AND c.user.id NOT IN (" +
+            "SELECT c2.user.id FROM Clinic c2 " +
+            "WHERE c2.hospital.id = :hospitalId " +
+            "GROUP BY c2.user.id HAVING COUNT(c2) > 1)")
     int countNewUsers(Long hospitalId);
 
     // 재방문 환자 수
-    @Query("SELECT r.user.id FROM Reservation r " +
-            "WHERE r.hospital.id = :hospitalId " +
-            "GROUP BY r.user.id HAVING COUNT(r) > 1")
+    @Query("SELECT c.user.id FROM Clinic c " +
+            "WHERE c.hospital.id = :hospitalId " +
+            "GROUP BY c.user.id HAVING COUNT(c) > 1")
     List<Long> countReturnList(Long hospitalId);
 
     default int countReturn(Long hospitalId) {
