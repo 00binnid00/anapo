@@ -56,7 +56,7 @@ public class NoticeController {
         return ResponseEntity.ok("삭제 완료!");
     }
 
-    /* ========================================================================================= */
+/* ========================================================================================= */
 
     // 제목 검색
     @GetMapping("/search/title")
@@ -77,5 +77,57 @@ public class NoticeController {
             @RequestParam String keyword
     ) {
         return ResponseEntity.ok(noticeService.searchByHospitalAndTitle(hospitalId, keyword));
+    }
+
+/* ========================================================================================= */
+
+    // 전체 공지 (페이징)
+    @GetMapping("/page")
+    public ResponseEntity<?> getPagedNotices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(noticeService.getPagedNotices(page, size));
+    }
+
+    // 병원별 공지 (페이징)
+    @GetMapping("/hospital/{hospitalId}/page")
+    public ResponseEntity<?> getPagedNoticesByHospital(
+            @PathVariable Long hospitalId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(noticeService.getPagedNoticesByHospital(hospitalId, page, size));
+    }
+
+    // 제목 검색 (페이징)
+    @GetMapping("/search/title/page")
+    public ResponseEntity<?> searchByTitlePaged(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(noticeService.searchByTitlePaged(keyword, page, size));
+    }
+
+    // 작성자 검색 (페이징)
+    @GetMapping("/search/writer/page")
+    public ResponseEntity<?> searchByWriterPaged(
+            @RequestParam String writer,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(noticeService.searchByWriterPaged(writer, page, size));
+    }
+
+    // 병원 + 제목 검색 (페이징)
+    @GetMapping("/search/hospital/page")
+    public ResponseEntity<?> searchByHospitalAndTitlePaged(
+            @RequestParam Long hospitalId,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(noticeService.searchByHospitalAndTitlePaged(hospitalId, keyword, page, size));
     }
 }

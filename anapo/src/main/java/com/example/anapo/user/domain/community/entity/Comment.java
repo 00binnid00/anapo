@@ -1,49 +1,48 @@
-package com.example.anapo.user.domain.notice.entity;
+package com.example.anapo.user.domain.community.entity;
 
-import com.example.anapo.user.domain.hospital.entity.Hospital;
+import com.example.anapo.user.domain.account.entity.Account;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "notice")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Notice {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     private String writer;
 
-    @Column(name = "hospital_id")
-    private Long hospitalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account account;
 
-    private int viewCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Community community;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.viewCount = 0; // 처음 생성 시 조회수 0
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

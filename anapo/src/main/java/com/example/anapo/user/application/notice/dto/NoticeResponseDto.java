@@ -13,6 +13,7 @@ public class NoticeResponseDto { // 응답용
     private String content;
     private String writer;
     private Long hospitalId;
+    private int viewCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
