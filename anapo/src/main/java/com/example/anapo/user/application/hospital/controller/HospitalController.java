@@ -93,4 +93,10 @@ public class HospitalController {
         List<HospitalDisDto> result = hospitalSearchService.getNearbyHospitals(lat, lng);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/search/address")
+    public ResponseEntity<?> searchByAddress(@RequestParam String address) {
+        List<HospitalDisDto> result = hospitalService.searchByAddress(address);
+        return ResponseEntity.ok(result);
+    }
 }
