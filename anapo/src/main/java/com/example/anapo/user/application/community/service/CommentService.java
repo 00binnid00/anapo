@@ -62,7 +62,7 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         // 전체 댓글 조회
-        List<Comment> comments = commentRepository.findByCommunityOrderByCreatedAtAsc(post);
+        List<Comment> comments = commentRepository.findByCommunity(post);
 
         // id 매핑용 map
         Map<Long, CommentResponseDto> map = new HashMap<>();
