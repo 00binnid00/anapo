@@ -1,7 +1,7 @@
 package com.example.anapo.admin.application.service;
 
 import com.example.anapo.admin.application.dto.RankingDto;
-import com.example.anapo.admin.domain.repository.RankingRepository;
+import com.example.anapo.admin.domain.RankingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

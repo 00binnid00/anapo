@@ -1,4 +1,4 @@
-package com.example.anapo.admin.domain.repository;
+package com.example.anapo.admin.domain;
 
 import com.example.anapo.user.domain.hospital.entity.Hospital;
 import org.springframework.data.jpa.repository.JpaRepository;
