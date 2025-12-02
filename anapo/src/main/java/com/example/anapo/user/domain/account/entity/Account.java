@@ -1,5 +1,6 @@
 package com.example.anapo.user.domain.account.entity;
 
+import com.example.anapo.user.enums.AccountStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -17,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotEmpty
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -43,6 +43,11 @@ public class Account {
     @Column(nullable = false)
     private String sex;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private AccountStatus status = AccountStatus.ACTIVE;
+
     public Account(String userPassword, String userName, String userId, @NotEmpty(message = "전화번호는 필수항목입니다.") @Pattern(regexp = "\\d{10,11}", message = "전화번호 형식은 01012345678이어야 합니다.") String userNumber, String birth, String sex) {
         this.userPassword = userPassword;
         this.userName = userName;
@@ -51,4 +56,5 @@ public class Account {
         this.birth = birth;
         this.sex = sex;
     }
+
 }
