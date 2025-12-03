@@ -1,5 +1,6 @@
 package com.example.anapo.user.application.reservation.service;
 
+import com.example.anapo.user.application.notification.service.NotificationService;
 import com.example.anapo.user.application.reservation.dto.ReservationDto;
 import com.example.anapo.user.domain.account.entity.Account;
 import com.example.anapo.user.domain.account.repository.AccountRepository;
@@ -21,6 +22,7 @@ public class ReservationService {
     private final AccountRepository accountRepository;
     private final HospitalRepository hospitalRepository;
     private final HospitalDepartmentRepository hospitalDepartmentRepository;
+    private final NotificationService notificationService;
 
     // 예약 등록
     public Reservation createReservation(ReservationDto dto) {
@@ -64,8 +66,35 @@ public class ReservationService {
                 hospital // Hospital 엔티티
         );
 
-        return reservationRepository.save(reservation);
+        // 6. DB 저장
+        Reservation saved = reservationRepository.save(reservation);
+
+    /* -------------------------------------------------------------------------------------------- */
+
+        /* 알림 생성 */
+        // 7. 예약 시간 1시간 전 알림 생성
+        LocalDateTime send1h = saved.getReserDate().minusHours(1);
+        notificationService.createNotification(
+                user.getId(),
+                "예약 안내",
+                user.getUserName() + "님의 병원 예약 시간이 1시간 후입니다.",
+                send1h
+        );
+
+        // 8. 예약시간 10분 전 알림 생성
+        LocalDateTime send10min = saved.getReserDate().minusMinutes(10);
+
+        notificationService.createNotification(
+                user.getId(),
+                "예약 안내",
+                user.getUserName() + "님의 병원 예약 시간이 10분 후입니다.",
+                send10min
+        );
+
+        return saved;
     }
+
+ /* --------------------------------------------------------------------------------------------- */
 
     // 예약 수정
     public Reservation updateReservation(Long reservationId, ReservationDto dto) {
@@ -103,7 +132,7 @@ public class ReservationService {
     // 예약 삭제
     public void deleteReservation(Long reservationId) {
 
-        // 존재 여부 확인
+        // 예약(데이터) 존재 여부 확인
         boolean exists = reservationRepository.existsById(reservationId);
         if (!exists) {
             throw new IllegalArgumentException("해당 예약이 존재하지 않습니다.");
