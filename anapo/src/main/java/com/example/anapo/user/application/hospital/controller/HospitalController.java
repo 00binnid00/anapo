@@ -99,4 +99,21 @@ public class HospitalController {
         List<HospitalDisDto> result = hospitalService.searchByAddress(address);
         return ResponseEntity.ok(result);
     }
+
+    
+    // 병원 삭제
+    @DeleteMapping("/{hosId}")
+    public ResponseEntity<?> deleteByHospitals(@PathVariable Long hosId) {
+        try {
+            hospitalService.deleteHospital(hosId);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "병원이 정상적으로 삭제되었습니다.",
+                    "hosId", hosId
+            ));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.anapo.user.application.hospital.service;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -60,6 +62,7 @@ public class GeocodingService {
             return new double[]{lat, lng};
 
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -74,9 +77,9 @@ public class GeocodingService {
             String url = "https://dapi.kakao.com/v2/local/search/keyword.json?query=" +
                     URLEncoder.encode(keyword, StandardCharsets.UTF_8);
 
-            ResponseEntity<Map> response =
-                    rest.exchange(url, HttpMethod.GET, entity, Map.class);
-
+            ResponseEntity<Map<String, Object>> response =
+                    rest.exchange(url, HttpMethod.GET, entity,
+                            new ParameterizedTypeReference<Map<String, Object>>() {});
             System.out.println("키워드 검색 응답: " + response.getBody());
 
             List<Map<String, Object>> documents =

@@ -44,6 +44,7 @@ public class HospitalService {
                 .hosName(hospital.getHosName())
                 .hosAddress(hospital.getHosAddress())
                 .hosNumber(hospital.getHosNumber())
+                .hosEmail(hospital.getHosEmail())
                 .hosTime(hospital.getHosTime())
                 .build();
     }
@@ -53,10 +54,17 @@ public class HospitalService {
     @Transactional
     public Hospital createHospital(HosCreateDto dto) {
 
-        // 주소를 위도/경도로 변환 => 주소만 입력받아도 백에서 자동으로 계산해서 디비에 넣어줌
+        // 주소 → 위도/경도 변환
+        double lat = 0.0;
+        double lng = 0.0;
+
         double[] coords = geocodingService.geocode(dto.getHosAddress());
-        double lat = coords[0];
-        double lng = coords[1];
+
+        // null-safe 처리 추가 (주소 검색 실패 시에도 병원 등록이 가능하도록)
+        if (coords != null) {
+            lat = coords[0];
+            lng = coords[1];
+        }
 
         // 병원 저장 (lat/lng 자동 삽입)
         Hospital hospital = Hospital.builder()
@@ -119,6 +127,22 @@ public class HospitalService {
         );
 
         return hospital;
+    }
+
+
+    // 병원 삭제
+    @Transactional
+    public void deleteHospital(Long hosId) {
+
+        // 1. 병원 존재 여부 확인
+        Hospital hospital = hospitalRepository.findById(hosId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 병원이 존재하지 않습니다."));
+
+        // 2. 매핑된 진료과(HospitalDepartment) 모두 삭제
+        hospitalDepartmentRepository.deleteByHospitalId(hosId);
+
+        // 3. 병원 삭제
+        hospitalRepository.delete(hospital);
     }
 
 /*------------------------------------------------------------------------------------------*/

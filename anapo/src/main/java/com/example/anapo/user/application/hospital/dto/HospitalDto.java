@@ -21,6 +21,9 @@ public class HospitalDto {
     private String hosNumber;
 
     @NotEmpty
+    private String hosEmail;
+
+    @NotEmpty
     private String hosTime;
 
 }
